@@ -1,3 +1,3 @@
-# Zenn CLI
+# My Zenn 
 
-* [📘 How to use](https://zenn.dev/zenn/articles/zenn-cli-guide)
+© 2022 CoCo9122. All Rights Reserved.
