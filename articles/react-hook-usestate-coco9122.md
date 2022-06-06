@@ -10,8 +10,10 @@ published: true
 フロントエンド開発で学習したものを忘れないようにReact Hooksの備忘録として投稿。
 
 - useState()
-- useEffect()
-- useRef()
+- [useEffect()](https://zenn.dev/coco9122/articles/react-hook-useeffect-coco9122)
+
+https://zenn.dev/coco9122/articles/react-hook-useeffect-coco9122
+
 
 :::message
 本記事はuseStateについての内容になります。
