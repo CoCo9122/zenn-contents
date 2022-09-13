@@ -1,7 +1,7 @@
 ---
-title: ""
+title: "Azureでk8s Hard Wayする"
 emoji: "📚"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: []
+topics: ["kubernetes","azure"]
 published: false
 ---
