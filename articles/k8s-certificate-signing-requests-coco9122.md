@@ -126,11 +126,11 @@ graph TB
     3.CSRの承認 --> 4.証明書の取得
     4.証明書の取得 --> 9.role,rlebindingの作成
     end
-    4.証明書の取得 -.kubectlをたたきたいPCにコピー.-> 6.証明書とキーファイルをPCにコピー
+    4.証明書の取得 -.kubectlをたたきたいPCにコピー.-> 6.ユーザーおよびクラスターの証明書とキーファイルをPCにコピー
     subgraph kubectlをたたきたいPC
-    5.PCにkubectlのイントール --> 6.証明書とキーファイルをPCにコピー
-    6.証明書とキーファイルをPCにコピー　--> 7.証明書とキーファイルをもとにkubeconfigにuserを設定
-    6.証明書とキーファイルをPCにコピー　--> 8.kubeconfigにcluster,contextを設定
+    5.PCにkubectlのイントール --> 6.ユーザーおよびクラスターの証明書とキーファイルをPCにコピー
+    6.ユーザーおよびクラスターの証明書とキーファイルをPCにコピー　--> 7.証明書とキーファイルをもとにkubeconfigにuserを設定
+    6.ユーザーおよびクラスターの証明書とキーファイルをPCにコピー　--> 8.kubeconfigにcluster,contextを設定
     end
     7.証明書とキーファイルをもとにkubeconfigにuserを設定 -.kubeconfigに設定したuserを使用.-> 9.role,rlebindingの作成
 ```
@@ -258,11 +258,17 @@ kubectl get csr takashi -o yaml
 kubectl get csr takashi -o jsonpath='{.status.certificate}'| base64 -d > takashi.crt
 ```
 
+続いてクラスターの認証書をファイル保存します。
+
+```sh
+kubectl config view --minify --raw -o jsonpath='{.clusters[*].cluster.certificate-authority-data}' | base64 -d > ca-cluster.crt
+```
+
 確認を行います。
 
 ```sh
 ls
-> takashi.crt  takashi.key takashi.csr  takashi.yaml
+> ca-cluster.crt takashi.crt  takashi.key takashi.csr  takashi.yaml
 ```
 lsコマンドで以下の4つがあれば大丈夫です。
 ::::
@@ -313,7 +319,7 @@ kubectl version --client
 versionがv1.24.3と表示されれば大丈夫です。
 ::::
 
-:::: details 6. kubectlをたたきたいPCにコピー
+:::: details 6. ユーザーおよびクラスターの証明書とキーファイルをPCにコピー
 
 :::message alert
 引き続きWindows(kubectlをたたきたいPC)の操作になります。
@@ -323,6 +329,7 @@ versionがv1.24.3と表示されれば大丈夫です。
 ```sh
 scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/takashi.key
 scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/takashi.crt
+scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/ca-cluster.crt
 ```
 
 - dirコマンドで確認
@@ -331,7 +338,7 @@ scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/takashi.
 dir
 ```
 
-kubectl.exeとtakashi.keyとtakashi.crtファイルがあれば大丈夫です。
+kubectl.exeとtakashi.keyとtakashi.crtとca-cluster.crtファイルがあれば大丈夫です。
 
 ::::
 
@@ -342,15 +349,37 @@ kubectl.exeとtakashi.keyとtakashi.crtファイルがあれば大丈夫です�
 :::
 
 - userの登録
+
+takashiとしてkubeconfigにuser登録します
 ```sh
 kubectl config set-credentials takashi --client-key=takashi.key --client-certificate=takashi.crt --embed-certs=true
 ```
+
+- 確認
+```sh
+kubectl config view
+```
+
+ここにたかし君が含まれていれば大丈夫です。
+
 ::::
 
 :::: details 8. kubeconfigにcluster,contextを設定
-:::message
-Linuxの操作になります。
+
+:::message alert
+引き続きWindows(kubectlをたたきたいPC)の操作になります。
 :::
+
+- kubeconfigにclusterの登録
+```sh
+kubectl config set-cluster takashi-cluster --server=https://<プライベートIPアドレス> --certificate-authority=ca-cluster.crt --embed-certs=true
+```
+
+- kubeconfigにcontextの登録
+```sh
+kubectl config set-context takashi@takashi-cluster --cluster=takashi-cluster --namespace=takashi --user=takashi
+```
+
 ::::
 
 :::: details 9. role,rlebindingの作成
@@ -358,5 +387,22 @@ Linuxの操作になります。
 :::message
 Linuxの操作になります。
 :::
+
+今回の要件はnamespaceがtakashi下でのServiceとDeploymentの管理ということになります。
+
+- namespaceの作成
+```sh
+kubectl create ns takashi
+```
+
+- roleの作成
+```sh
+kubectl create role takashi-role -n takashi --resource=deployment,service --verb=*
+```
+
+- rolebindingの作成
+```sh
+kubectl create rolebinding takashi-rolebinding -n takashi --user=takashi --role=takashi-role
+```
 
 ::::
