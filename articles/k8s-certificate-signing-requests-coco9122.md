@@ -568,3 +568,12 @@ Roleで認可されていないリクエストは実行できないことが分�
 # まとめ
 
 今回は別PCからSSH接続せずにkubectlをたたくということで以上のことを行いました。工程が多く初期設定の際には躓くことが多いかと思われます。またユーザーの認証期間が過ぎますとまた同じように1, 2, 3, 4, 6, 7の工程が必要になります。
+
+
+# 参考URL
+
+参考にさせていただきました。ありがとうございます。
+
+https://kubernetes.io/docs/tutorials/kubernetes-basics/
+
+https://qiita.com/knqyf263/items/aefb0ff139cfb6519e27
