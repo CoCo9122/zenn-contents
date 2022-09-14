@@ -3,12 +3,19 @@ title: "自宅で構築したk8sに別PCからkubectlをたたく！"
 emoji: "👋"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["kubernetes"]
-published: false
+published: true
 ---
 
 # kubectlたたきたい
 
-自宅でオンプレのk8s環境の作成を行う場合、直接Linuxのターミナルか別PCからLinuxにSSH接続してkubectlをたたくと思います。これを別PCからSSH接続せずにkubectlをたたくというのが今回の目的です。
+自宅でオンプレのk8s環境の作成を行う場合、直接Linuxのターミナルか別PCからLinuxにSSH接続してkubectlをたたくと思います。これを別PCからSSH接続せずにコマンドプロンプトkubectlをたたくというのが今回の目的です。
+
+```mermaid
+sequenceDiagram
+    PC->>master-node: podのリストの確認してもいいですか？ 
+    Note over PC,master-node: kubectl get pods
+    master-node->>PC: リクエストを実行しました。
+```
 
 # 環境
 
@@ -18,9 +25,8 @@ published: false
 オンプレですでにk8s環境は構築済みでの話となります。
 :::
 
----
 
-## 使用される仕組み
+# 使用される仕組み
 
 - Certificate Signing Requests
 - RBAC Authorization
@@ -100,7 +106,7 @@ PC1を使用しているたかし君から以下のことを行いたいと要�
 
 とのことでした。というていでやっていきます。
 
-今回はnamespaceに「takashi」を作成し、ここで以下のコマンドを打てるように実装します。これでたかしくんの要望は満たせると思います。
+今回はNamespaceに「takashi」を作成し、ここで以下のコマンドを打てるように実装します。これでたかしくんの要望は満たせると思います。
 
 - Windows(PC1)から「takashi」というユーザーでk8s環境にnginx:1.16のDeploymentを作成
 - Windows(PC1)から「takashi」というユーザーでk8s環境のDeploymentの一覧を確認
@@ -114,9 +120,7 @@ PC1を使用しているたかし君から以下のことを行いたいと要�
 :::
 
 
-# 流れ
-
-## 今回行う流れ 
+# 実装の流れ
 
 ```mermaid
 graph TB
@@ -124,7 +128,7 @@ graph TB
     1.秘密鍵,証明書署名要求の作成 --> 2.CSRの作成
     2.CSRの作成 --> 3.CSRの承認
     3.CSRの承認 --> 4.証明書の取得
-    4.証明書の取得 --> 9.role,rlebindingの作成
+    4.証明書の取得 --> 9.Role,Rolebindingの作成
     end
     4.証明書の取得 -.kubectlをたたきたいPCにコピー.-> 6.ユーザーおよびクラスターの証明書とキーファイルをPCにコピー
     subgraph kubectlをたたきたいPC
@@ -132,7 +136,7 @@ graph TB
     6.ユーザーおよびクラスターの証明書とキーファイルをPCにコピー　--> 7.証明書とキーファイルをもとにkubeconfigにuserを設定
     6.ユーザーおよびクラスターの証明書とキーファイルをPCにコピー　--> 8.kubeconfigにcluster,contextを設定
     end
-    7.証明書とキーファイルをもとにkubeconfigにuserを設定 -.kubeconfigに設定したuserを使用.-> 9.role,rlebindingの作成
+    7.証明書とキーファイルをもとにkubeconfigにuserを設定 -.kubeconfigに設定したuserを使用.-> 9.Role,Rolebindingの作成
 ```
 
 詳しい流れはこのリンクを参照下さい。
@@ -148,7 +152,7 @@ ssh <Linuxユーザー名>@<プライベートIPアドレス>
 ```
 
 :::message
-Linuxの操作になります。
+Linux(k8s)の操作になります。
 :::
 
 - 秘密鍵を保存するディレクトリの作成
@@ -171,7 +175,7 @@ openssl genrsa -out takashi.key 2048
 openssl req -new -days 3650 -key takashi.key -out takashi.csr
 ```
 :::message
-色々聞かれますがすべてEnterキーを押していれば大丈夫です。
+色々聞かれますがCNにはtakashiと入力し、それ以外はEnterキーを押していれば大丈夫です。
 :::
 
 - 確認
@@ -184,6 +188,10 @@ lsコマンドで以上の二つがあれば問題ありません。
 
 ::::details 2. CSRの作成
 
+:::message
+Linux(k8s)の操作になります。
+:::
+
 - 先ほどと同じディレクトリに以下のようなyamlファイルを作成
 ```sh
 vi takashi.yaml
@@ -195,11 +203,20 @@ kind: CertificateSigningRequest
 metadata:
   name: takashi
 spec:
+  groups:
+  - system:authenticated 
   request: 
+  expirationSeconds: 8640000
   signerName: kubernetes.io/kube-apiserver-client
   usages:
   - client auth
+  - digital signature
+  - key encipherment
 ```
+
+::: message alert
+expirationSecondsは認証する期間になります。秒単位になります。
+:::
 
 - 作成したtakashi.csrのデコード
 ```sh
@@ -213,10 +230,15 @@ kind: CertificateSigningRequest
 metadata:
   name: takashi
 spec:
+  groups:
+  - system:authenticated
 - request:
 + request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ2lqQ0NBWElDQVFBd1JURUxNQWtHQTFVRUJoTUNRVlV4RXpBUkJnTlZCQWdNQ2xOdmJXVXRVM1JoZEdVeApJVEFmQmdOVkJBb01HRWx1ZEdWeWJtVjBJRmRwWkdkcGRITWdVSFI1SUV4MFpEQ0NBU0l3RFFZSktvWklodmNOCkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFMNWRocXNGNmNyNUs3OWJobHVzS0Jwc25EcmF4YkhnNkJCY3AvWDQKSDUvc1k1T1dsVmJBdGxWeE13d0xZV3l3N3dxQXA5TjZyMXpLUkVwRXRYWnNkQU9DNGE2WUwxMlhSeW9RMkE2Ywp4UDhwMEhXVEt1S044TEhDNDJna3kwcDlpM2FhYXlTRkRNbnJrM0hPMngwN2ppZ0RDa2UwbnlXOFlESjYzcEJpClZZeVk0SHZFdGYvOTdVNEtLS21oU3hrZXNQMUlYOWxLazRpZFB6M2lQYjE2SmJBa21aLzdueXRRUVFnMzdpWlAKTGlqc1NzZ2Rha3U5cDArRVJGRVdTMmt4SlBJWFA5V0lHQVl0bzcxcEZkVndDWlp6M1NmcHZUVk5udTFLWTlvVwpXL1dlNm4xMUZKYm9uNGpIWW1Rc2gydEZ1cWhLVGs4VktEdkVaWGpUNUYvYmw3TUNBd0VBQWFBQU1BMEdDU3FHClNJYjNEUUVCQ3dVQUE0SUJBUUJveExaR3RsQ09OQzFrcTJJcXAxSElqWDJNKzZxVWcySkJkRERxdVlNcElXQmcKc1J2aDR1b0tHSkdVRkJyMUhveE02WDZVazk3cTk0eFE5dk42ZURnYk55R2dNQmdQRzdKdG5uNlpRYnpLbG9HbApkUFRhdnI1bzNFSW9uVjF4U0tlUFMyWnBNcW1Rc3NaczNUaU5HdTFxL09NOHNxWTIycElqWmphZ0hVOW9YYTlMCkExVi9JZzdlSGt2UkFXUHphM1pCVGdCcXA3TkEwNU8vczd5SkNseFg0enV5SjFwd0xBaHBKVFpwbXE4Sk92YVAKUWJoRksvUVREVDFMNUVZQkV3MVNnaGNBVFJKeXBlREdQSStHSmxuWUg4UjExQXJ4NXlvZVU3WEYvb0Nlam4yNgpCdnNxQkVCLzh2TDdiYWdWdTFGc2xUNFAyZis4UzBaSWhXSS9saU1CCi0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  expirationSeconds: 86400
   signerName: kubernetes.io/kube-apiserver-client
   usages:
+  - digital signature
+  - key encipherment
   - client auth
 ```
 
@@ -229,6 +251,10 @@ kubectl apply -f takashi.yaml
 ::::
 
 :::: details 3. CSRの承認
+
+:::message
+Linux(k8s)の操作になります。
+:::
 
 CSRの確認をしましょう。
 ```sh
@@ -245,6 +271,10 @@ kubectl certificate approve takashi
 ::::
 
 :::: details 4. 証明書の取得
+
+:::message
+Linux(k8s)の操作になります。
+:::
 
 ```sh
 kubectl get csr takashi -o yaml
@@ -274,6 +304,10 @@ lsコマンドで以下の4つがあれば大丈夫です。
 ::::
 
 :::: details 5. PCにkubectlのイントール
+
+:::message
+Linux(k8s)の操作になります。
+:::
 
 以下のリンクが参考になります。
 https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/#install-kubectl-binary-with-curl-on-windows
@@ -327,9 +361,9 @@ versionがv1.24.3と表示されれば大丈夫です。
 
 - keyファイルとcrtファイルをWindowsのtakashiフォルダーにコピー
 ```sh
-scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/takashi.key
-scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/takashi.crt
-scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/ca-cluster.crt
+scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/takashi.key ./
+scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/takashi.crt ./
+scp <Linuxユーザー名>@<プライベートIPアドレス>:~/takashi/ca-cluster.crt ./
 ```
 
 - dirコマンドで確認
@@ -372,7 +406,7 @@ kubectl config view
 
 - kubeconfigにclusterの登録
 ```sh
-kubectl config set-cluster takashi-cluster --server=https://<プライベートIPアドレス> --certificate-authority=ca-cluster.crt --embed-certs=true
+kubectl config set-cluster takashi-cluster --server=https://<プライベートIPアドレス>:6443 --certificate-authority=ca-cluster.crt --embed-certs=true
 ```
 
 - kubeconfigにcontextの登録
@@ -380,29 +414,157 @@ kubectl config set-cluster takashi-cluster --server=https://<プライベートI
 kubectl config set-context takashi@takashi-cluster --cluster=takashi-cluster --namespace=takashi --user=takashi
 ```
 
-::::
+- kubeconfigにcurrent-contextの設定
+```sh
+kubectl config use-context takashi@takashi-cluster
+```
 
-:::: details 9. role,rlebindingの作成
+- 確認
+```sh
+kubectl config view
+```
 
-:::message
-Linuxの操作になります。
+ここに追加したclusterとcontextがあれば大丈夫です。
+またcurrent-contextがtakashi@takashi-clusterとなっていれば問題ありません。
+
+:::message alert
+プライベートIPアドレスはマスターノードのIPアドレスになります。
 :::
 
-今回の要件はnamespaceがtakashi下でのServiceとDeploymentの管理ということになります。
+::::
 
-- namespaceの作成
+:::: details 9. Role,Rolebindingの作成
+
+:::message
+Linux(k8s)の操作になります。
+:::
+
+今回の要件はNamespaceがtakashi下でのServiceとDeploymentの管理ということになります。
+
+- Namespaceの作成
 ```sh
 kubectl create ns takashi
 ```
 
-- roleの作成
+- Roleの作成
 ```sh
 kubectl create role takashi-role -n takashi --resource=deployment,service --verb=*
 ```
 
-- rolebindingの作成
+ServiceとDeploymentのコマンドをすべて許可します。
+
+- Rolebindingの作成
 ```sh
 kubectl create rolebinding takashi-rolebinding -n takashi --user=takashi --role=takashi-role
 ```
 
+登録したtakashiとRoleを紐づけします。
+
+- 確認
+
+```sh
+kubectl get ns
+kubectl get role,rolebinding -n takashi
+```
+
+ここに作成したNamespace, Role, Rolebindingがあれば大丈夫です。
+
 ::::
+
+
+ここまで行うと実際にkubectlの実行が可能になっていると思います。
+
+# 検証
+
+- Windows(PC1)から「takashi」というユーザーでk8s環境にnginx:1.16のDeploymentを作成
+
+```sh
+kubectl create deployment nginx --image=nginx:1.16 --replicas=3 
+```
+
+```sh
+> deployment.apps/nginx created
+```
+- Windows(PC1)から「takashi」というユーザーでk8s環境のDeploymentの一覧を確認
+
+```sh
+kubectl get deployment
+```
+
+```sh
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   3/3     3            3           61s
+```
+
+- Windows(PC1)から「takashi」というユーザーでk8s環境にService(NodePort)を作成し、Deploymentの公開
+
+```sh
+kubectl expose deployment nginx --port=80 --target-port=80 --name=nginx-service --type=NodePort
+```
+
+```sh
+> service/nginx-service exposed
+```
+
+- Windows(PC1)から「takashi」というユーザーでk8s環境のServiceの一覧を確認
+```sh
+kubectl get service
+```
+
+```sh
+NAME            TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+nginx-service   NodePort   10.110.146.250   <none>        80:31410/TCP   27s
+```
+
+- Windows(PC1)からnginxのスタートページの閲覧
+
+http://<プライベートIPアドレス>:<NodePort>にアクセス
+
+:::message
+私の場合はNodePortは31410になります。作成のたびに異なります。
+:::
+
+「Welcome to nginx!」が見れれば成功
+
+- Windows(PC1)から「takashi」というユーザーでk8s環境にある作成したDeploymentとServiceの削除
+```sh
+kubectl delete svc nginx-service
+kubectl delete deployment nginx
+```
+
+```sh
+> service "nginx-service" deleted
+> deployment.apps "nginx" deleted
+```
+
+:::: details 追加課題
+
+- Windows(PC1)から「takashi」というユーザーでk8s環境のPodの一覧を確認
+
+```sh
+kubectl get pods
+```
+
+```sh
+Error from server (Forbidden): pods is forbidden: User "takashi" cannot list resource "pods" in API group "" in the namespace "takashi"
+```
+
+- Windows(PC1)から「takashi」というユーザーでk8s環境でPodの作成
+
+```sh
+kubectl run nginx --image=nginx
+```
+
+```sh
+Error from server (Forbidden): pods is forbidden: User "takashi" cannot create resource "pods" in API group "" in the namespace "takashi"
+```
+
+Roleで認可されていないリクエストは実行できないことが分かります。
+
+::::
+
+以上からPC1からDeploymentとServiceの管理したいという要求は満たせています。
+
+# まとめ
+
+今回は別PCからSSH接続せずにkubectlをたたくということで以上のことを行いました。工程が多く初期設定の際には躓くことが多いかと思われます。またユーザーの認証期間が過ぎますとまた同じように1, 2, 3, 4, 6, 7の工程が必要になります。
