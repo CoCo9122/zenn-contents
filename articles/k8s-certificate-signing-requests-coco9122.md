@@ -577,3 +577,6 @@ Roleで認可されていないリクエストは実行できないことが分�
 https://kubernetes.io/docs/tutorials/kubernetes-basics/
 
 https://qiita.com/knqyf263/items/aefb0ff139cfb6519e27
+
+https://spacelift.io/blog/kubernetes-tutorial
+    
