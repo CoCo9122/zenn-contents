@@ -3,7 +3,7 @@ title: "はじめてのFlask"
 emoji: "✨"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["python","flask"]
-published: false
+published: true
 ---
 
 # Flaskとは
@@ -60,13 +60,17 @@ RUN pip install --upgrade pip
 RUN pip install flask
 ```
 
+コンテナの中に入って、pythonを実行するのでコマンドは書いていません。
+
 # docker-compose.yamlの作成
+
+docker-compose.yamlを作成していきます。
 
 ```yaml
 version: "3"
 services:
   flask:
-    bluid:
+    build:
       context: .
       dockerfile: ./docker/Dockerfile
     restart: always
@@ -97,11 +101,22 @@ app.run(host='0.0.0.0', port=8080)
 
 最後の一行だけ追加いたしました。これはポートの設定を追加しています。
 
+簡単に説明いたします。
+1行目はflaskのインポートになります。
+3行目にflaskのインスタンスの作成を行っています。
+
+5行目はURLのルーティングの指定を行っています。この場合は`http://localhost:8080/`になります。`app.route("/hello")`とすれば、`http://localhost:8080/hello`となります。
+
+6~7行目は5行目のURLが呼び出された際に、呼び出される関数が表記されています。今回の場合は、`<p>Hello World!</p>`が戻り値として表記されています。したがって、`http://localhost:8080/`で表示される画面は`Hello World!`となります。
+
+9行目でFlaskのアプリケーションのを起動しています。
+
 # Webアプリケーションの起動
 
 まずはコンテナの中に入っていきます。
+
 ```sh
-docker exec -it /bin/bash
+docker exec -it <コンテナ名> /bin/bash
 ```
 
 flaskのアプリを起動します。
@@ -110,6 +125,7 @@ python main.py
 ```
 
 ここにアクセスすると`Hello World!`と表示されるはずです。
+http://localhost:8080
 
 # Flaskのシンプルさ
 環境などの設定が必要ですが、Pythonのコードは6行で完結しています。とてもシンプルです。また、コードからどのような挙動をしているかシンプルで分かりやすいのが特徴です。webアプリケーションの流れと実際のコードの流れを学びたい初学者にはよいwebアプリケーション（主にバックエンド）フレームワークになっていると思います。
@@ -119,7 +135,7 @@ python main.py
 
 # まとめ
 
-今回はFlaskの基本の基本を作成致しました。
+今回はFlaskの基本を作成致しました。ここからwebアプリケーションの勉強の先駆けとなればなと思っています。次回あたりは、HTTPリクエストメソッド、クエリパラメータ、DBの接続等の記事のどれかを作成していきたいと思います。
 
 # 参考文献
 https://msiz07-flask-docs-ja.readthedocs.io/ja/latest/
@@ -127,6 +143,7 @@ https://msiz07-flask-docs-ja.readthedocs.io/ja/latest/
 # Github
 
 リポジトリになります。
+https://github.com/CoCo9122/flask-startup
 
 # 変更履歴
-・2023年02月09日 投稿
+・2023年02月10日 投稿
