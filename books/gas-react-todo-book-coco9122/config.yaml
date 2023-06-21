@@ -1,0 +1,10 @@
+title: "無料で内製Webアプリケーションをデプロイする！"
+summary: "作成したWebアプリケーションをデプロイするとなると自前のサーバーを構築したり、クラウドの仮想マシンを用意したりとコストがかかると思います。\n\nこの本ではGASとReactとスプレッドシートを利用した無料でWebアプリケーションを構築できる内容を紹介します。\n\n# 執筆者情報 \n\n# 更新履歴"
+topics: ["react", "javascript", "gas", "googleappscript", "googlesheets"]
+published: false
+price: 0 # 有料の場合200〜5000
+# 本に含めるチャプターを順番に並べましょう
+chapters:
+  - introduction
+  - environment
+  - deploy
