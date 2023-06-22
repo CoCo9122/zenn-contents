@@ -178,22 +178,29 @@ clasp create --type webapp
 
 ### ファイル作成、移動
 
-- serverフォルダーの作成、appsscript.jsonをserverフォルダーに移動
-- serverフォルダー配下にcode.jsの作成
+次に`zenn-react-gas`配下に`pred`ディレクトリの作成、appsscript.jsonを`pred`ディレクトリに移動します。また`pred`ディレクトリ配下にcode.jsの作成を行います。
 
-7. .clasp.jsonの修正
+### .clasp.jsonの修正
 
-```diff json
+以下のようにrootDirを先ほど作成したディレクトリに変更します。
+
+```diff json:./.clasp.json
 {
     "scriptId":"XXX...XXX",
 -   "rootDir":"C:\\ ... \\incidet-gas"
-+   "rootDir":"./server"
++   "rootDir":"./pred"
 }
 ```
 
-8. vite.config.jsの修正
+:::message
+scriptIdはGASのユニークな文字列になります。そのためXXX...XXXと表現しています。
+:::
 
-```js
+### vite.config.jsの修正
+
+`vite.config.js`の内容を全て削除し、以下のコードを貼り付けます。
+
+```js:./vite.config.js
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { viteSingleFile } from 'vite-plugin-singlefile'
@@ -201,24 +208,27 @@ import { viteSingleFile } from 'vite-plugin-singlefile'
 export default defineConfig({
   plugins: [react(), viteSingleFile()],
   build: {
-    outDir: "server/hosting",
+    outDir: "pred/hosting",
   },
 });
 ```
 
-9. server/code.jsの修正
+### pred/code.jsの修正
 
-```js
+`pred/code.js`に以下のコードを貼り付けます。
+
+```js:./pred/code.js
 function doGet() {
     return HtmlService.createHtmlOutputFromFile("hosting/index.html")
       .addMetaTag("viewport", "width=device-width, initial-scale=1")
-      .setTitle("勤怠管理")
+      .setTitle("Zenn + GAS + React")
 }
 ```
+### pred/appsscript.jsonの修正
 
-10. server/appsscript.jsonの修正
+以下のように`appsscript.json`を変更します。これはGASの設定になります。timeZoneは標準時間の設定、webappのaccessはwebアプリケーションにアクセスできる権限の設定になります。今回はMYSELFなので自分自身のみアクセス可能です。webappのexecuteAsは実行ユーザになります。
 
-```diff js
+```diff js:./pred/appsscript.json
 {
 - "timeZone": "...",
 + "timeZone": "Asia/Tokyo",
@@ -233,21 +243,9 @@ function doGet() {
 }
 ```
 
-11. GASにプッシュ、デプロイ
-
+環境構築は以上になります。最終的なディレクトリ構成は以下のようになります。
 ```sh
-clasp push
-```
-```sh
-clasp deploy
-```
-```sh
-clasp deploy --deploymentId=...
 ```
 
 環境構築は以下サイトを参考にしています。
 @[card](https://engineer.retty.me/entry/2022/12/22/150035)
-
-
-
-# Hello Worldのデプロイ
