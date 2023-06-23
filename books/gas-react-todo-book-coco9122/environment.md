@@ -2,8 +2,6 @@
 title: "開発環境を構築"
 ---
 
-ここでは開発環境を構築していきます。環境はWindows10で作成していきます。
-
 # 事前確認
 ## Node.jsのインストール
 
@@ -178,7 +176,7 @@ clasp create --type webapp
 
 ### ファイル作成、移動
 
-次に`zenn-react-gas`配下に`pred`ディレクトリの作成、appsscript.jsonを`pred`ディレクトリに移動します。また`pred`ディレクトリ配下にcode.jsの作成を行います。
+次に`zenn-react-gas`配下に`pred`ディレクトリの作成、`appsscript.json`を`pred`ディレクトリに移動します。また`pred`ディレクトリ配下に`code.js`の作成を行います。`code.js`は**GASにおけるAPサーバ**に当たります。
 
 ### .clasp.jsonの修正
 
@@ -230,7 +228,7 @@ function doGet() {
 
 ```diff js:./pred/appsscript.json
 {
-- "timeZone": "...",
+- "timeZone": "America/New_York",
 + "timeZone": "Asia/Tokyo",
   "dependencies": {
   },
@@ -244,7 +242,33 @@ function doGet() {
 ```
 
 環境構築は以上になります。最終的なディレクトリ構成は以下のようになります。
-```sh
+```
+D:.
+│  .eslintrc.cjs
+│  .gitignore
+│  index.html
+│  package.json
+│  package-lock.json
+│  vite.config.js
+│  .clasp.json
+│
+├─node_modules(たくさんあるので省略)
+│
+├─public
+│      vite.svg
+│
+├─pred
+│   │  appsscript.json
+│   └─ code.js
+│
+└─src
+    │  App.css
+    │  App.jsx
+    │  index.css
+    │  main.jsx
+    │
+    └─assets
+            react.svg
 ```
 
 環境構築は以下サイトを参考にしています。

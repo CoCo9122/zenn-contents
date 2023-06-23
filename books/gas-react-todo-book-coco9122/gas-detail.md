@@ -114,3 +114,39 @@ stateDiagram
 ## それぞれのサーバの接続方法
 
 一般的なWebアプリケーションはそれぞれのサーバでhttp通信で情報のやり取りを行っています。
+
+```mermaid
+stateDiagram-v2
+direction LR
+    state 一般のWebアプリケーション {
+      direction LR
+      Webサーバ
+      APサーバ
+      DBサーバ
+    }
+    Webサーバ --> APサーバ: http通信
+    APサーバ --> Webサーバ: http通信
+    APサーバ --> DBサーバ: http通信
+    DBサーバ --> APサーバ: http通信
+```
+
+GASの場合、WebサーバとAPサーバ間の通信はプロジェクト内で完結しますので関数の呼び出しといった形で通信を行います。APサーバ間とDBサーバの通信はOpenByIdによるスプレッドシートのIDを指定する形で通信を行います。詳しい実装は第2章　Webアプリケーションの作成で説明します。
+
+:::message
+GASの場合はそれぞれのサーバ間でhttp通信は行いません。
+:::
+
+```mermaid
+stateDiagram-v2
+direction LR
+    state GASのWebアプリケーション {
+      direction LR
+      Webサーバ
+      APサーバ
+      DBサーバ
+    }
+    Webサーバ --> APサーバ: gsの関数の呼び出し
+    APサーバ --> Webサーバ: gsの関数の戻り値
+    APサーバ --> DBサーバ: OpenById
+    DBサーバ --> APサーバ: OpenById
+```
