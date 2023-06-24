@@ -22,25 +22,27 @@ title: "はじめに"
 
 この章ではGASにおけるWebアプリケーションの考え方から初期構築まで解説します。
 
-- chapter01 - GASにおけるWebアプリケーション
-- chapter02 - 開発環境を構築
-- chapter03 - Webアプリケーションのデプロイ
+- chapter02 - GASにおけるWebアプリケーション
+- chapter03 - 開発環境を構築
+- chapter04 - Webアプリケーションのデプロイ
 
 
 ## 第2章　Webアプリケーションの作成
 
+この章では実際にWebアプリケーションの作成を行います。作成する勤怠管理アプリになります。
 
-- chapter04 - 作成するアプリケーション「決めてない」
-- chapter05 - スプレッドシートからデータを取得する
-- chapter06 - スプレッドシートにデータを書き込む
-- chapter07 - アクセス制御を実装する
+- chapter05 - 作成するアプリケーション「勤怠管理」
+- chapter06 - 勤怠登録画面の作成
+- chapter00 - スプレッドシートからデータを取得する
+- chapter00 - スプレッドシートにデータを書き込む
+- chapter00 - アクセス制御を実装する
 
 ## 第3章　課題とおまけ
 
-- chapter08 - GASアプリケーションで不可能なこと
-- chapter09 - おまけ
-- chapter10 - 終わりに
-- chapter11 - Appendix
+- chapter00 - GASアプリケーションで不可能なこと
+- chapter00 - おまけ
+- chapter00 - 終わりに
+- chapter00 - Appendix
 
 # 使用するもの
 
