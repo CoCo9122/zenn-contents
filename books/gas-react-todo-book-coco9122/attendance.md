@@ -68,16 +68,16 @@ import { useState } from 'react'
 - import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+- const [count, setCount] = useState(0)
 
   return (
     <>
       <h1>Hello World!</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
+-     <div className="card">
+-       <button onClick={() => setCount((count) => count + 1)}>
+-         count is {count}
+-       </button>
+-     </div>
     </>
   )
 }
@@ -92,15 +92,16 @@ export default App
 
 ### アトミックデザインに適した設定
 
-次にアトミックデザインに適したディレクトリの作成を行います。`./src`配下に以下の5つのディレクトリを作成します。
+次にアトミックデザインに適したディレクトリの作成を行います。`./src`配下に`components`を作成し、その配下に以下の5つのディレクトリを作成します。ディレクトリ構成は以下になります。
 
 ```
 src:.
-│  atoms
-│  molecules
-│  Organisms
-│  Templates
-└─ Pages
+└─ components
+    │  atoms
+    │  molecules
+    │  organisms
+    │  templates
+    └─ pages
 ```
 
 アトミックデザインのディレクトリを作成は以上になります。アトミックデザインの参考サイトは以下を参照ください。
