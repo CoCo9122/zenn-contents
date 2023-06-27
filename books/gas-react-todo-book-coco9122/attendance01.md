@@ -144,3 +144,148 @@ export default MainTemplate
 これでヘッダーの作成は終わりです。
 
 ### 勤怠登録(ボディ)の作成
+
+それでは本題の勤怠登録のWeb画面を作成しています。まずはアバターとオンライン表示可能なアイコンのコンポーネントの作成します。`./src/components/molecules`配下に`AttendanceAvatar.jsx`を作成し、以下を入力します。これでアバターコンポーネントの作成完了です。
+
+```jsx:./src/components/molecules/AttendanceAvatar.jsx
+import React from "react"
+
+// Chakra UIのコンポーネントのImport
+import { Avatar, AvatarBadge, Flex, Box, Text } from '@chakra-ui/react'
+
+const AttendanceAvatar = () => {
+    return(
+        <Flex textAlign={'center'} mb={3}>
+            <Avatar border={'solid #A0AEC0'} bg='teal.500'>
+                <AvatarBadge boxSize='1em' bg='green.300' borderColor={'gray.400'}/>
+            </Avatar>
+        </Flex>
+    )
+}
+
+export default AttendanceAvatar
+```
+
+次に勤怠登録を行うボタンを作成します。`./src/components/molecules`配下に`AttendanceButtons.jsx`を作成します。今回ボタンは開始、終了ボタンにいたします。以下を入力しますとボタンコンポーネントの作成完了です。
+
+```jsx:./src/components/molecules/AttendanceButtons.jsx
+import React from "react"
+
+// Chakra UIのコンポーネントのImport
+import { Button, ButtonGroup } from '@chakra-ui/react'
+
+const AttendanceButtons = () => {
+    return(
+        <ButtonGroup gap='4' m={2}>
+            <Button colorScheme='blackAlpha'>開始</Button>
+            <Button colorScheme='blackAlpha'>終了</Button>
+        </ButtonGroup>
+    )
+}
+
+export default AttendanceButtons
+```
+
+次はロール（役職）の表示を行うコンポーネントを作成します。`./src/components/molecules`配下に`AttendanceRole.jsx`を作成します。ここに管理者かそうでないかが分かるコンポーネントを表示するものになります。以下を入力しますとロールコンポーネントの作成完了です。
+
+```jsx:./src/components/molecules/AttendanceRole.jsx
+import React from "react"
+
+// Chakra UIのコンポーネントのImport
+import { Stack, Text, Tag, TagLabel, TagRightIcon } from '@chakra-ui/react'
+
+const AttendanceRole = () => {
+    return(
+        <Stack m={2}>
+            <Text fontSize={'2xl'}>Role</Text>
+            <Tag size={'md'} w={'min'}>
+                <TagLabel>Admin</TagLabel>
+            </Tag>
+        </Stack>
+    )
+}
+
+export default AttendanceRole
+```
+
+先ほど作成したコンポーネントをまとめるコンポーネントを作成します。これが勤怠登録画面のメインになります。`./src/components/organisms`配下に`AttendanceBody.jsx`を作成します。以下のコードをコピーします。これで作成完了になります。
+
+```jsx:./src/components/organisms/AttendanceBody.jsx
+import React from "react"
+
+// Chakra UIのコンポーネントのImport
+import { Box, Text, Divider } from '@chakra-ui/react'
+
+// コンポーネントのImport
+import AttendanceButtons from "../molecules/AttendanceButtons"
+import AttendanceAvatar from "../molecules/AttendanceAvatar"
+import AttendanceRole from "../molecules/AttendanceRole"
+
+const AttendanceBody = () => {
+    return(
+        <Box bg={'linear-gradient( #C4F1F9 0px, #C4F1F9 45px, #A0AEC0 30px, #A0AEC0 100% )'} w={'50%'}  borderRadius={'10'} p={3}> 
+            <AttendanceAvatar />
+            <Box bg={'gray.600'} borderRadius={'10'} p={2} color={'white'}>
+                <Text fontSize={'4xl'} ml={2}>CoCo9122</Text>
+                <Text fontSize={'xl'} ml={2}>abcdefg@admin.com</Text>
+                <Divider w={'98%'} ml={'1%'}/>
+                <AttendanceRole />
+                <Box align='right'>
+                    <AttendanceButtons />
+                </Box>
+            </Box>
+        </Box>
+    )
+}
+
+export default AttendanceBody
+```
+
+全てのボディを集結させるコンポーネントを作成します。`./src/components/organisms`配下に`MainBody.jsx`を作成します。以下のコードをコピーします。これで作成完了になります。
+
+```jsx:./src/components/organisms/MainBody.jsx
+import React from "react"
+
+// Chakra UIのコンポーネントのImport
+import { Box, } from "@chakra-ui/react"
+
+// コンポーネントのImport
+import AttendanceBody from "./AttendanceBody"
+
+const MainBody = () => {
+    return(
+        <Box mt={5} w={'70%'} ml={'15%'} pb={5} pt={5} color={'black'}>
+            <AttendanceBody />
+        </Box>
+    )
+}
+
+export default MainBody
+```
+
+最後に`./src/components/templates/MainTemplate.jsx`に`MainBody`コンポーネントを読み込むためにいかのように修正します。
+
+```diff jsx:./src/components/templates/MainTemplate.jsx
+import React from 'react'
+
+// コンポーネントのImport
+import MainHeader from '../molecules/MainHeader'
++ import MainBody from '../organisms/MainBody'
+
+const MainTemplate = () => {
+
+    return (
+        <>
+           <MainHeader />
++          <MainBody />
+        </>
+    )
+}
+
+export default MainTemplate
+```
+
+作成が完了しますと、図3.1のようになります。
+
+![](/images/gas-react-todo-book-coco9122/attendance01-0001.jpg)
+*図3.1 勤怠登録画面*
