@@ -3,7 +3,7 @@ title: "[Minecraft Mod] Java,Gradleのインストールまで"
 emoji: "🔥"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["java"]
-published: false
+published: true
 publication_name: "dawnzlight"
 ---
 
