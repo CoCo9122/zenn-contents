@@ -3,7 +3,7 @@ title: "VSCodeにてJavaのコードをフォーマットして、github Actions
 emoji: "📚"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["java", "gradle"]
-published: false
+published: true
 publication_name: "dawnzlight"
 ---
 

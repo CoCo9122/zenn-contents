@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "zenn preview",
+            "type": "shell",
+            "command": "npx zenn preview",
+            "args": [],
+            "problemMatcher": [],
+        },
+        {
+            "label": "記事の作成",
+            "type": "shell",
+            "command": "npx zenn new:article --slug ${input:articlename}",
+            "args": [],
+            "problemMatcher": [],
+        },
+    ],
+    "inputs": [
+        {
+            "type": "promptString",
+            "id": "articlename",
+            "description": "記事のスラグ名を入力してください。",
+            "default": ""
+        },
+    ]
+}
