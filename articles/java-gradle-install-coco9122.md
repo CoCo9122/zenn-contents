@@ -1,8 +1,8 @@
 ---
-title: "[Minecraft Mod] Java,Gradleのインストールまで"
+title: "[Minecraft Mod #1] Java,Gradleのインストールまで"
 emoji: "🔥"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: ["java"]
+topics: ["java", "gradle"]
 published: true
 publication_name: "dawnzlight"
 ---
