@@ -3,7 +3,8 @@ title: "[Minecraft Mod #2] Minecraft Mod開発の初期構築"
 emoji: "🍣"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["java", "minecraft"]
-published: false
+published: true
+publication_name: "dawnzlight"
 ---
 
 # はじめに
