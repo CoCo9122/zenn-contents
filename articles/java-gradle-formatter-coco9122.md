@@ -1,5 +1,5 @@
 ---
-title: "VSCodeにてJavaのコードをフォーマットして、github Actionsでそれをチェックしたい"
+title: "[java]VSCodeにてJavaのコードをフォーマットして、github Actionsでそれをチェックしたい"
 emoji: "📚"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["java", "gradle"]
