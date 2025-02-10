@@ -1,5 +1,5 @@
 ---
-title: "Manabiya AI"
+title: "「Manabiya AI」【AI Agent Hackathon with Google Cloud】 "
 emoji: "🌸"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["flutter","android","firebase","gcp", "langchain"]
@@ -85,17 +85,16 @@ ManabiyaAIは、最新のクラウド技術とAI技術を融合し、シーム�
 **主要コンポーネント**:
 - **フロントエンド**: Flutter (Dart)   
 - **バックエンド**: Firebase（Firestore, Auth, Storage）
-- **AI連携**: Cloud Function/Gloud Run（Python, Go）
+- **AI連携**: Cloud Run（Python, Go）
 - **AIモデル**: Gemini 2.0 FlashEXP  
 - **オープンソースフレームワーク**: LangChainを利用し、AIの応答やフィードバックの生成を効率化。
-![](https://storage.googleapis.com/zenn-user-upload/1a114337b746-20250209.png)
+![](https://storage.googleapis.com/zenn-user-upload/4c9530cc5fab-20250210.png)
 
 ## 実装の詳細
 
 ### 開発工程の効率化
 - NotionとGitHub Flowのブランチ戦略を用いたタスク管理ベースの開発。
   - 作業ブランチはmainから作業内容がわかるような名前のブランチの作成。
-  - 複数の作業ブランチを統合するためのstgを作成。
   - 開発者はNotionにより管理された各ブランチに分けて開発作業の実施。
   - stg/mainへのマージ前に、プルリクエストを作成し他の開発者からレビューを実施。
   - CI/CDの実装により、mainにマージ完了自動デプロイ。
@@ -111,6 +110,14 @@ ManabiyaAIは、最新のクラウド技術とAI技術を融合し、シーム�
 ### AI Agent
 - 授業の内容とリンクした小テストの自動作成機能
   - 授業の内容を音声データをリアルタイムで取得し、Speech to Textで取り込みテストに反映
+- 生徒自身が直ぐに苦手箇所を把握できる小テストAI採点
+  - 記述の採点は、問題趣旨の理解を促すプロンプトを組むことで実現。
+  - 各問題に解説と教科書のどの範囲からの問題なのかを示す出題箇所を自動生成(RAG)
+  - 採点結果は決められたスキーマで固定、また意図しない出力を補正するための補正関数を用意している。
+- クラス毎の理解度を把握できるAI分析機能 
+  - 小テストの採点結果を読み込み、AIが理解度の傾向を分析
+  - 具体的な計算が必要な処理はプログラムで行うことで、正確に値を算出 
+  - AIの自動生成とプログラムを適宜使い分けることで、グラフの作成を容易にしている。
 
 
 ## 利用シナリオ
@@ -135,9 +142,7 @@ ManabiyaAIは、最新のクラウド技術とAI技術を融合し、シーム�
 
 
 ## デモ動画
-
-**【仮のデモ動画リンク】**:  
-[YouTubeデモ動画](https://youtu.be/EXAMPLE12345)  
+https://youtu.be/kF9nuw77AOo
 
 
 ## 効果
@@ -202,7 +207,7 @@ ManabiyaAIの導入により、以下の成果が期待されます。
 
 ## まとめ
 
-ManabiyaAIは、私立英語中学校の新人教員向けに、授業準備、授業運営、評価、フィードバックを一元管理する革新的なAIエージェントです。最新のクラウド技術（Firebase、Cloud Functions）と、先進の大規模言語モデル（Gemini 2.0 FlashEXP）、オープンソースフレームワーク（LangChain）を組み合わせることで、教師の個性や指導スタイルを最大限に反映した、質の高い教育支援を実現します。
+ManabiyaAIは、私立英語中学校の新人教員向けに、授業準備、授業運営、評価、フィードバックを一元管理する革新的なAIエージェントです。クラウド技術（Firebase、Cloud Run）と、先進の大規模言語モデル（Gemini 2.0 FlashEXP）、オープンソースフレームワーク（LangChain）を組み合わせることで、教師の個性や指導スタイルを最大限に反映した、質の高い教育支援を実現します。
 
 従来の教育支援システムが抱えていた「画一的な指導」という問題に対し、ManabiyaAIは教師自身の経験と個性を活かしながら、効率的かつ効果的な授業運営をサポートします。授業準備の時間短縮、生徒の理解度向上、そして新人教員の負担軽減といった多大な成果が期待できるこのシステムで、未来の教育現場に新たな価値を提供します。
 
@@ -211,6 +216,7 @@ ManabiyaAIは、私立英語中学校の新人教員向けに、授業準備、�
 ---
 
 **プロジェクト詳細・リポジトリ**:  
-[GitHub - ManabiyaAI](https://github.com/teamshackathon/ai_agent_frontend)
+[GitHub - ManabiyaAI Frontend](https://github.com/teamshackathon/ai_agent_frontend)
+[GitHub - ManabiyaAI Backend](https://github.com/teamshackathon/ai_agent_websocket)
 
 ---
