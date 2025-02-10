@@ -3,7 +3,7 @@ title: "ManabiyaAI：新人教師でも、ベテランでも、その先の学�
 emoji: "🌸"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["flutter","android","firebase","gcp", "langchain"]
-published: false
+published: true
 ---
 
 ## はじめに
