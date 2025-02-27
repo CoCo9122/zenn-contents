@@ -19,5 +19,9 @@
   "homepage": "https://github.com/CoCo9122/zenn-contents#readme",
   "dependencies": {
     "zenn-cli": "^0.1.154"
+  },
+  "volta": {
+    "node": "18.17.0",
+    "npm": "9.5.1"
   }
 }
