@@ -3,7 +3,7 @@ title: "ClaudeでPlaywright MCPを使う（Windows）"
 emoji: "🤖"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["mcp", "playwright", "claude"]
-published: false
+published: true
 ---
 
 # はじめに

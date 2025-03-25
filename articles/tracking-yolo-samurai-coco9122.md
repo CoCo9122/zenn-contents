@@ -3,7 +3,7 @@ title: "最新のTracking技術を比較！YOLO-Tracking と SAMURAI の違い"
 emoji: "🐡"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["python"]
-published: false
+published: true
 publication_name: "polarisai_blog"
 ---
 
