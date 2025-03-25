@@ -9,7 +9,7 @@ publication_name: "polarisai_blog"
 
 # はじめに
 
-Polaris.AIにて、業務委託で携わっているプロジェクトにおいて、Tracking技術について調査を実施しましたので、今回はその”学び”について説明したいと思います。
+Polaris.AIにて携わっているプロジェクトにおいて、Tracking技術について調査を実施しましたので、今回はその”学び”について説明したいと思います。
 
 ## Tracking技術の重要性
 
