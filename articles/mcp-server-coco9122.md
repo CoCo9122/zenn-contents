@@ -3,7 +3,7 @@ title: "MCPを活用して社内システムをClaudeから操作する"
 emoji: "🐥"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["mcp", "claude", "python"]
-published: false
+published: true
 ---
 
 # はじめに
